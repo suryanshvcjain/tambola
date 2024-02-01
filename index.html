@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .home-screen, .tambola-screen {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .ticket-container {
+      overflow-x: auto;
+      margin: 20px;
+    }
+
+    table {
+      border-collapse: collapse;
+      margin: 0 auto;
+    }
+
+    table, th, td {
+      border: 1px solid black;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: center;
+      position: relative;
+    }
+
+    .ticket-cell {
+      cursor: pointer;
+      position: relative;
+    }
+
+    .hash-sign {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      display: none;
+      color: red;
+      font-size: 14px;
+    }
+  </style>
+  <title>Welcome to Tambola by Shaurya Jain</title>
+</head>
+<body>
+
+<!-- Home Screen -->
+<div class="home-screen">
+  <h1>Welcome to Tambola by Shaurya Jain</h1>
+  <button onclick="showTambolaScreen()">Single Tambola Ticket</button>
+  <button onclick="showDoubleTambolaScreen()">Double Tambola Ticket</button>
+</div>
+
+<!-- Tambola Screen -->
+<div class="tambola-screen" style="display:none;">
+  <h2 id="ticketType">Tambola Ticket</h2>
+  <div class="ticket-container" id="ticket-container">
+    <!-- Tambola ticket will be generated here -->
+  </div>
+</div>
+
+<script>
+  let isDoubleTicket = false;
+
+  // Function to generate a Tambola ticket with a specified number of empty cells
+  function generateTambolaTicket(emptyCellCount) {
+    const rows = isDoubleTicket ? 6 : 3;
+    const columns = isDoubleTicket ? 9 : 9;
+
+    let emptyCells = [];
+    while (emptyCells.length < emptyCellCount) {
+      const randomRow = Math.floor(Math.random() * rows);
+      const randomColumn = Math.floor(Math.random() * columns);
+      const cellIndex = `${randomRow}-${randomColumn}`;
+
+      if (!emptyCells.includes(cellIndex)) {
+        emptyCells.push(cellIndex);
+      }
+    }
+
+    let ticket = '<table>';
+    for (let i = 0; i < rows; i++) {
+      ticket += '<tr>';
+      for (let j = 0; j < columns; j++) {
+        const cellIndex = `${i}-${j}`;
+        const cellContent = (emptyCells.includes(cellIndex)) ? '' : getRandomNumber(1, 90);
+        ticket += `<td class="ticket-cell" onclick="toggleHashSign(this)">${cellContent}<div class="hash-sign">#</div></td>`;
+      }
+      ticket += '</tr>';
+    }
+    ticket += '</table>';
+
+    document.getElementById('ticket-container').innerHTML = ticket;
+  }
+
+  // Function to show the Tambola screen and generate a ticket
+  function showTambolaScreen() {
+    isDoubleTicket = false;
+    document.getElementById('ticketType').textContent = 'Tambola Ticket';
+    document.querySelector('.home-screen').style.display = 'none';
+    document.querySelector('.tambola-screen').style.display = 'block';
+    generateTambolaTicket(getRandomNumber(10, 12));
+  }
+
+  // Function to show the Double Tambola screen and generate a ticket
+  function showDoubleTambolaScreen() {
+    isDoubleTicket = true;
+    document.getElementById('ticketType').textContent = 'Double Tambola Ticket';
+    document.querySelector('.home-screen').style.display = 'none';
+    document.querySelector('.tambola-screen').style.display = 'block';
+    generateTambolaTicket(getRandomNumber(20, 24));
+  }
+
+  // Function to toggle the "#" sign on a cell when clicked
+  function toggleHashSign(cell) {
+    const hashSign = cell.querySelector('.hash-sign');
+    hashSign.style.display = (hashSign.style.display === 'none') ? 'block' : 'none';
+  }
+
+  // Function to generate a random number within a specified range
+  function getRandomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+</script>
+
+</body>
+</html>
